@@ -6,11 +6,16 @@ from app.services.timeline_service import generate_monthly_timeline
 from app.services.stress_detector import detect_stress_indicators
 from app.services.scoring_service import calculate_stress_score
 from app.services.recommendation_service import generate_forward_view
+from app.models.response_models import AnalysisResponse
 
 # Create API router
-router = APIRouter()
+router = APIRouter(tags=["Cashflow Analysis"])
 
-@router.post("/analyse")
+@router.post(
+        "/analyse",
+        response_model=AnalysisResponse,
+        response_model_exclude_none=True
+)
 async def analyse_cashflow(
     file: UploadFile = File(...)
 ):
