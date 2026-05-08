@@ -2,6 +2,7 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException
 
 from app.services.csv_parser import parse_csv
+from app.services.timeline_service import generate_monthly_timeline
 
 # Create API router
 router = APIRouter()
@@ -22,11 +23,14 @@ async def analyse_cashflow(
         # Parse and clean uploaded CSV
         transactions_df = await parse_csv(file)
 
+        # Generate monthly cashflow timeline
+        monthly_timeline = generate_monthly_timeline(transactions_df)
+
         # Return temporary response for testing
         return {
             "message": "CSV processed successfully ",
             "total_transactions": len(transactions_df),
-            "columns": list(transactions_df.columns)
+            "monthly_timeline": monthly_timeline
         }
     except ValueError as error:
         raise HTTPException(
